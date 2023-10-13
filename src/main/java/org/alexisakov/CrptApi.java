@@ -35,11 +35,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
+ *
  * @author Александр Исаков
  * @version 1.0
  * Класс для работы с API Честного знака
- *
  * Реализовано создание документа для ввода в оборот товара, произведенного в РФ
+ * Написан простой ResponseHandler, т.к. не все аббревиатуры в документации к API были ясны
+ *
  */
 
 public class CrptApi {
