@@ -269,3 +269,53 @@ public class CrptApi {
         LP_INTRODUCE_GOODS_XML
     }
 }
+
+/*
+
+* Тестовая попытка реализовать авторизацию пользователя,
+* не до конца понял как внедрить ее в исходный код, так что решил оставить здесь.
+
+
+// метод получения токена и даты его создания
+    @SuppressWarnings("unchecked")
+    public Pair<Long, String> getTokenWithDate() throws IOException, HttpException {
+        Pair<Long, InputStream> dateInputStreamPair = (Pair<Long, InputStream>) requestAuthorization();
+
+        // проверка, не истек ли срок жизни кэша
+        if (System.currentTimeMillis() - dateInputStreamPair.getLeft() >= 60000) {
+            throw new HttpException("Время жизни кэша пары uuid - productGroupId истекло");
+        }
+
+        JSONObject jsonObject = new JSONObject(dateInputStreamPair.getRight());
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(AUTHENTIFICATION_TOKEN_URL);
+            httpPost.addHeader("Content-Type", "application/json");
+
+            List<NameValuePair> parameters = new ArrayList<>(2);
+            parameters.add(new BasicNameValuePair("uuid", jsonObject.getString("uuid")));
+            parameters.add(new BasicNameValuePair("data", Base64.getEncoder().encodeToString(jsonObject.getString("data").getBytes(StandardCharsets.UTF_8))));
+
+            httpPost.setEntity(new UrlEncodedFormEntity(parameters, "UTF-8"));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+
+            return new ImmutablePair<>(System.currentTimeMillis(), new JSONObject(httpEntity.getContent()).getString("token"));
+        }
+    }
+
+    // метод запроса на авторизацию и получения времени создания кэша пары uuid - productGroupId
+    public Object requestAuthorization() throws IOException {
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(AUTHORIZATION_REQUEST_URL);
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            Long createdCacheDate = System.currentTimeMillis();
+
+            int code = httpResponse.getStatusLine().getStatusCode();
+            return code >= 200 && code < 300 ? new ImmutablePair<>(createdCacheDate, httpResponse.getEntity().getContent()) : new ClientProtocolException("Произошла неизвестная ошибка");
+
+        }
+    }
+
+ */
